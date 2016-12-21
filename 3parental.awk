@@ -1,5 +1,5 @@
 BEGIN {
-	errfile = "errors.3.log"
+	errfile = "janus.log"
 	print "" > errfile
 	YEAR_PARENTAL_NAME = 1965
 }
