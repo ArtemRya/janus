@@ -2,8 +2,8 @@ BEGIN {
     prevLastName = ""
     previous = ""
     logfile = "janus.log"
-    emailFile = "!emails.csv"
-    phonesFile = "!phones.csv"
+    emailFile = "!!emails.csv"
+    phonesFile = "!!phones.csv"
     s = "|"  # TODO use ,
 
     emailChange[".ru"] = "\.r$"
@@ -40,20 +40,12 @@ BEGIN {
                 print NR " ! bad email format => use phone: " $0
             }
 
-            before = $5
-            # print NR "+phone - !!! TODO !!"
-            commaPos = index ($5, ",")
-            if (commaPos > 0) {
-                if (commaPos < 8) {
-                    print "ERROR (" NR ") " $7 " телефон имеет запятую как-то слишком рано" > logfile
-                    print NR " ! телефон имеет запятую как-то слишком рано: " $0
-                } else {
-                    $5 = substr($5, 1, commaPos - 1)
-                }
-            }
+            # before = $5
+            # gsub(/[^d,]/, "", $5)
+            # TODO split
 
-
-                    print NR " ь телефон изменён с " $5
+            print NR " +phone: " $0
+            print $1 s $2 " " $3 s $5 s $6 > phonesFile
         }
     }
 }
