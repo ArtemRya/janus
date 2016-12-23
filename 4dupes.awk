@@ -8,8 +8,10 @@ BEGIN {
 }
 
 {
-    cur = $0
-    gsub($7,"",cur)
+    # cur = $0 /     gsub($7,"",cur)
+
+    cur = $1 s $2 s $3
+
     if (cur == previous) {
         print NR " -----EXCLUDE дупликат исключён: " $0
     } else {
