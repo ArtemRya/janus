@@ -2,19 +2,28 @@ BEGIN {
 #    prevDate = ""
     prevLastName = ""
     previous = ""
-    # logfile = "janus.log"
+    logfile = "janus.log"
     emailfile = "rez4.emails.csv"
-    s = "|"
+    s = "|"  # TODO use ,
 }
 
 {
     cur = $0
     gsub($7,"",cur)
     if (cur == previous) {
-        print "EXCLUDE дупликат исключён: " $0
+        print NR " -----EXCLUDE дупликат исключён: " $0
     } else {
         gsub(" ","",$4)
-        print $1 s $2 " " $3 s $4 > emailfile
-        previous = cur
+        if ($4 ~ /[^@]+@[^@\]+\.[\@]+/) { # email fine
+            print $1 s $2 " " $3 s $4 s $6 > emailfile
+            previous = cur
+            print NR " ++E-MAIL: " $0
+        } else {   # email bad => use phone
+            if ($4 != "") {
+                print "ERROR (" NR ") " $7 " bad email format " $7 > logfile
+                print NR " ! bad email format => use phone: " $0
+            }
+            print NR "+phone - !!! TODO !!"
+        }
     }
 }
