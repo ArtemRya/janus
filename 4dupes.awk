@@ -18,9 +18,9 @@ BEGIN {
     if (cur == previous) {
         print NR " -----EXCLUDE дупликат исключён: " $0
     } else {
+        previous = cur
         gsub(" ","",$4)
         if ($4 ~ /[^@]+@[^@\]+\.[\@]+/) { # email fine
-            previous = cur
 
             before = $4
             for (replacement in emailChange) {
