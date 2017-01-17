@@ -24,5 +24,6 @@ $2 != $3 {
             name = substr (name, 1, spacepos - 1)
         }
     }
-    print $5 "|" lastname "|" name "|" $8 "|" $7 "|" $4 "|" $1
+    # birth date | ln       | name  | email | phone | title | order id
+    print $5 "|" lastname "|" name "|" $7 "|" $6 "|" $4 "|" $1
 }
