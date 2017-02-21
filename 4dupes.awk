@@ -10,35 +10,36 @@ BEGIN {
     emailChange[".com"] = "\.co?$"
 }
 
-{
-    # cur = $0 /     gsub($7,"",cur)
 
-    cur = $1 s $2 s $3
+{
+    cur = $1 s $2 s $3  # ДР , фамилия , имя отчество
+
+    gsub(" ","",$4) # EMail - get rid of spaces
 
     if (cur == previous) {
-        print NR " -----EXCLUDE дупликат исключён: " $0
+        if (previousEMail == "") {
+            previousEMail = getEMail($4)
+            if (previousEMail == "") {
+                print NR " -----EXCLUDE дупликат исключён (no email): " $0
+            } else {
+                print NR " -----EMAIL ADDED in ABOVE row: " $0 " (" previousEMail ")"
+            }
+        } else {
+            print NR " -----EXCLUDE дупликат исключён (email present): " $0
+        }
     } else {
+        printPrevious()
         previous = cur
-        gsub(" ","",$4)
-        if ($4 ~ /[^@]+@[^@\]+\.[\@]+/) { # email fine
-
-            before = $4
-            for (replacement in emailChange) {
-                # print NR "-DEBUG repl " emailChange[replacement] " =>" replacement " in " $4
-                gsub(emailChange[replacement], replacement, $4)
-                # print NR "-DEBUG result " $4
-            }
-            if (before != $4) {
-                print NR " @ email changed from " before " to "
-            }
-
+        previousEMail = getEMail($4)
+        if (previousEMail != "") { # email fine
             print NR " ++E-MAIL: " $0
-            print $1 s $2 s $3 s $4 s $6 > emailFile
+            # print $1 s $2 s $3 s $4 s $6 > emailFile
         } else {   # email bad => use phone
             if ($4 != "") {
                 print "ERROR (" NR ") " $7 " bad email format " $4 > logfile
                 print NR " ! bad email format => use phone: " $0
-            }
+            } else {
+                print "+Phone: " $0
 
             # before = $5
             # gsub(/[^d,]/, "", $5)
@@ -46,8 +47,45 @@ BEGIN {
 
             gsub(",", ";", $5)
 
-            print NR " +phone: " $0
+            # print NR " +phone: " $0
+            # print $1 s $2 s $3 s $5 s $6 > phonesFile
+            previousPhone = $5
+        }
+    }
+}
+
+
+END {
+    printPrevious()
+}
+
+
+
+function printPrevious() {
+    if ( previous != "" ) {
+        if (previousEMail != "") {
+            print $1 s $2 s $3 s $4 s $6 > emailFile
+        } else {
             print $1 s $2 s $3 s $5 s $6 > phonesFile
         }
     }
+}
+
+
+function getEMail(roughEMail) {
+    if (roughEMail ~ /[^@]+@[^@\]+\.[\@]+/) { # email fine
+
+        before = roughEMail
+        for (replacement in emailChange) {
+            # print NR "-DEBUG repl " emailChange[replacement] " =>" replacement " in " $4
+            gsub(emailChange[replacement], replacement, roughEMail)
+            # print NR "-DEBUG result " $4
+        }
+        if (before != roughEMail) {
+            print NR " @ email changed from " before " to " roughEMail
+        }
+        return roughEMail
+     } else {
+        return ""
+     }
 }

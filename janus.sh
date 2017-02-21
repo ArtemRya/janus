@@ -25,5 +25,5 @@ awk -F "|" -f 1be.awk rez1.fields.csv > rez2.spaces.hdr.csv
 awk -F "|" -f 3parental.awk rez2.spaces.hdr.csv | sort > rez3.parental.csv
 awk -F "|" -f 4dupes.awk rez3.parental.csv
 
-echo "**** Log ****"
-cat janus.log
+# echo "**** Log ****"
+# cat janus.log
