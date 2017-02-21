@@ -39,7 +39,8 @@ BEGIN {
                 print "ERROR (" NR ") " $7 " bad email format " $4 > logfile
                 print NR " ! bad email format => use phone: " $0
             } else {
-                print "+Phone: " $0
+                print NR "+Phone: " $0
+            }
 
             # before = $5
             # gsub(/[^d,]/, "", $5)
@@ -64,9 +65,9 @@ END {
 function printPrevious() {
     if ( previous != "" ) {
         if (previousEMail != "") {
-            print $1 s $2 s $3 s $4 s $6 > emailFile
+            print previous s previousEMail s $6 > emailFile
         } else {
-            print $1 s $2 s $3 s $5 s $6 > phonesFile
+            print previous s previousPhone s $6 > phonesFile
         }
     }
 }
