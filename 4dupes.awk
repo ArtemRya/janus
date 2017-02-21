@@ -4,15 +4,13 @@ BEGIN {
     logfile = "janus.log"
     emailFile = "!!emails.csv"
     phonesFile = "!!phones.csv"
-    s = ","  # TODO use ,
+    s = ","
 
     emailChange[".ru"] = "\.r$"
     emailChange[".com"] = "\.co?$"
 }
 
 {
-    # cur = $0 /     gsub($7,"",cur)
-
     cur = $1 s $2 s $3
 
     if (cur == previous) {
