@@ -23,11 +23,15 @@ $2 != $3 {
         name = substr ($2, spacepos + 1)
         spacepos = index (name, " ")
 	year = substr ($5, 7)
-        if (spacepos >0 && year > YEAR_PARENTAL_NAME) { # удалить отчество надо
+	if (length(year) == 2) {
+		year = "19" year
+	}
+        if ( length(year)==4 && spacepos>0 && year-YEAR_PARENTAL_NAME>0 ) { # удалить отчество надо
+            oldname = name
             name = substr (name, 1, spacepos - 1)
-	    print "no parental name: " name " - " year >> debugfile
+	    print "deleting parental name: " oldname " /" year "\ d " (year - YEAR_PARENTAL_NAME) " >> " name >> debugfile
         } else {
-	    print "parental needed: " name " - " year >> debugfile
+	    print "parental absent or needed or year wrong - " name " /" year >> debugfile
 	}
     }
     # birth date | ln       | name  | email | phone | title | order id
