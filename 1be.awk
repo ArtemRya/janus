@@ -8,8 +8,8 @@ BEGIN {
 
 NF >= 8 && NR != 1 {
 	gsub(/[ \t]+/," ")
-	gsub(" \|","|")
-	gsub("\| ","|")
+	gsub(/ \|/,"|")
+	gsub(/\| /,"|")
 	gsub(",",";")
 	print $0
 }
